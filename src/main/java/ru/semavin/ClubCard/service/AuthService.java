@@ -8,6 +8,7 @@ import ru.semavin.ClubCard.dto.ClubMemberLoginDTO;
 import ru.semavin.ClubCard.dto.ClubMemberRegisterDTO;
 import ru.semavin.ClubCard.models.ClubMember;
 import ru.semavin.ClubCard.models.RefreshToken;
+import ru.semavin.ClubCard.models.TemplatesPrivilege;
 import ru.semavin.ClubCard.security.jwt.JwtTokenProvider;
 import ru.semavin.ClubCard.util.AuthErrorException;
 import ru.semavin.ClubCard.util.ClubMemberEmailAlreadyUsed;
@@ -20,13 +21,14 @@ public class AuthService {
     private final ClubMemberService clubMemberService;
     private final JwtTokenProvider provider;
     private final RefreshTokenService refreshTokenService;
+    private final TemplatePrivilegeService templatePrivilegeService;
 
-    public AuthService(ClubMemberService clubMemberService, JwtTokenProvider provider, RefreshTokenService refreshTokenService) {
+    public AuthService(ClubMemberService clubMemberService, JwtTokenProvider provider, RefreshTokenService refreshTokenService, TemplatePrivilegeService templatePrivilegeService) {
         this.clubMemberService = clubMemberService;
         this.provider = provider;
         this.refreshTokenService = refreshTokenService;
+        this.templatePrivilegeService = templatePrivilegeService;
     }
-
     public void registerMember(ClubMemberRegisterDTO memberDTO) {
         if (clubMemberService.existByEmail(memberDTO.getEmail()))
             throw new ClubMemberEmailAlreadyUsed("User with email already exists");
@@ -39,7 +41,7 @@ public class AuthService {
                 .firstName(memberDTO.getFirstName())
                 .lastName(memberDTO.getLastName())
                 .phone(memberDTO.getPhone())
-                .privilege(List.of("basic"))
+                .privilegeTemplate(templatePrivilegeService.findByTemplate("user"))
                 .isLocked(false)
                 .build());
     }

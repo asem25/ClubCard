@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.*;
 @Entity
 @Table(name = "club_members")
@@ -37,11 +36,12 @@ public class ClubMember {
 
     private String phone;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> privilege = new ArrayList<>();
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "template", referencedColumnName = "template")
+    private TemplatesPrivilege privilegeTemplate;
     @Column(nullable = false)
     private boolean isLocked;
+
 
     @Column(nullable = false)
     private String role;
