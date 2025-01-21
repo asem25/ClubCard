@@ -2,6 +2,7 @@ package ru.semavin.ClubCard.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.Instant;
 @Entity
 @Table(name = "refresh_tokens")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RefreshToken {
