@@ -46,7 +46,7 @@ public class AuthService {
                 .isLocked(false)
                 .build());
 
-        kafkaEventProducer.sendEvent(memberDTO.getEmail(),String.format(
+        kafkaEventProducer.sendRegisterEvent(memberDTO.getEmail(),String.format(
                 "{\"eventType\":\"USER_REGISTERED\",\"email\":\"%s\",\"timestamp\":\"%s\"}",
                 memberDTO.getEmail(), Instant.now()));
     }
@@ -65,7 +65,7 @@ public class AuthService {
                 .refreshToken(refreshToken.getToken())
                 .build();
 
-        kafkaEventProducer.sendEvent(memberLoginDTO.getEmail(), authResponse);
+        kafkaEventProducer.sendLoginEvent(memberLoginDTO.getEmail(), authResponse);
 
 
         return authResponse;
