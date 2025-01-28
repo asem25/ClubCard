@@ -11,21 +11,16 @@ import org.springframework.stereotype.Service;
 public class KafkaEventProducer {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
-    @Value("${spring.kafka.topic.registration}")
-    private String topicRegName;
-    @Value("${spring.kafka.topic.login}")
-    private String topicLogName;
-
     public KafkaEventProducer(KafkaTemplate<String, Object> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void sendRegisterEvent(String key, Object message) {
-        kafkaTemplate.send(topicRegName, key, message);
+        kafkaTemplate.send("user.register.response", key, message);
         log.info("Send register message to Kafka: " + message);
     }
     public void sendLoginEvent(String key, Object message) {
-        kafkaTemplate.send(topicLogName, key, message);
+        kafkaTemplate.send("user.login.response", key, message);
         log.info("Send login message to Kafka: " + message);
     }
 }

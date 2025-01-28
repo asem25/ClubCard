@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.semavin.ClubCard.dto.AuthResponse;
 import ru.semavin.ClubCard.dto.ClubMemberLoginDTO;
 import ru.semavin.ClubCard.dto.ClubMemberRegisterDTO;
+import ru.semavin.ClubCard.dto.KafkaResponse;
 import ru.semavin.ClubCard.models.ClubMember;
 import ru.semavin.ClubCard.models.RefreshToken;
 import ru.semavin.ClubCard.producer.KafkaEventProducer;
@@ -14,6 +15,8 @@ import ru.semavin.ClubCard.util.ClubMemberEmailAlreadyUsed;
 
 
 import java.time.Instant;
+import java.time.LocalDate;
+
 @Service
 @Slf4j
 public class AuthService {
@@ -45,10 +48,6 @@ public class AuthService {
                 .privilegeTemplate(templatePrivilegeService.findByTemplate("user"))
                 .isLocked(false)
                 .build());
-
-        kafkaEventProducer.sendRegisterEvent(memberDTO.getEmail(),String.format(
-                "{\"eventType\":\"USER_REGISTERED\",\"email\":\"%s\",\"timestamp\":\"%s\"}",
-                memberDTO.getEmail(), Instant.now()));
     }
     public AuthResponse loginMember(ClubMemberLoginDTO memberLoginDTO){
         ClubMember clubMember = clubMemberService.findByEmail(memberLoginDTO.getEmail());
@@ -60,15 +59,10 @@ public class AuthService {
         String accessToken = provider.generateToken(memberLoginDTO.getEmail(), "ROLE_USER");
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(clubMember);
 
-        AuthResponse authResponse = AuthResponse.builder()
+        return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getToken())
                 .build();
-
-        kafkaEventProducer.sendLoginEvent(memberLoginDTO.getEmail(), authResponse);
-
-
-        return authResponse;
 
     }
 }
