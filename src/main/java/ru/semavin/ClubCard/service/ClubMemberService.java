@@ -19,8 +19,8 @@ public class ClubMemberService {
                 .orElseThrow(() -> new ClubMemberNotFoundException("Member not found"));
     }
     @Transactional
-    public ClubMember save(ClubMember clubMember){
-        return clubMemberRepository.save(clubMember);
+    public void save(ClubMember clubMember){
+        clubMemberRepository.save(clubMember);
     }
     public boolean existByEmail(String email){
         return clubMemberRepository.existsByEmailIgnoreCase(email);

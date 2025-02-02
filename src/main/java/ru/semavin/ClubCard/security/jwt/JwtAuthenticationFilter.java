@@ -11,18 +11,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.semavin.ClubCard.security.service.ClubMemberDetailsService;
+import ru.semavin.ClubCard.service.LogoutService;
 
 import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final ClubMemberDetailsService userDetailsService;
+    private final LogoutService logoutService;
     @Value("${spring.profiles.active:default}")
     private String activeProfile;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, ClubMemberDetailsService userDetailsService) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, ClubMemberDetailsService userDetailsService, LogoutService logoutService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
+        this.logoutService = logoutService;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         String token = getTokenFromRequest(request);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        if (token != null && jwtTokenProvider.validateToken(token) && !logoutService.isTokenBlackListed(token)) {
             String username = jwtTokenProvider.getUsernameFromToken(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 

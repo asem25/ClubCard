@@ -2,32 +2,25 @@ package ru.semavin.ClubCard.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.semavin.ClubCard.dto.AuthResponse;
-import ru.semavin.ClubCard.dto.ClubMemberLoginDTO;
-import ru.semavin.ClubCard.dto.ClubMemberRegisterDTO;
-import ru.semavin.ClubCard.dto.KafkaResponse;
+import ru.semavin.ClubCard.dto.*;
 import ru.semavin.ClubCard.models.ClubMember;
 import ru.semavin.ClubCard.models.RefreshToken;
-import ru.semavin.ClubCard.producer.KafkaEventProducer;
 import ru.semavin.ClubCard.security.jwt.JwtTokenProvider;
 import ru.semavin.ClubCard.util.AuthErrorException;
 import ru.semavin.ClubCard.util.ClubMemberEmailAlreadyUsed;
 
 
-import java.time.Instant;
-import java.time.LocalDate;
 
 @Service
 @Slf4j
 public class AuthService {
-    private final KafkaEventProducer kafkaEventProducer;
     private final ClubMemberService clubMemberService;
     private final JwtTokenProvider provider;
     private final RefreshTokenService refreshTokenService;
     private final TemplatePrivilegeService templatePrivilegeService;
 
-    public AuthService(KafkaEventProducer kafkaEventProducer, ClubMemberService clubMemberService, JwtTokenProvider provider, RefreshTokenService refreshTokenService, TemplatePrivilegeService templatePrivilegeService) {
-        this.kafkaEventProducer = kafkaEventProducer;
+    public AuthService(ClubMemberService clubMemberService, JwtTokenProvider provider, RefreshTokenService refreshTokenService, TemplatePrivilegeService templatePrivilegeService) {
+
         this.clubMemberService = clubMemberService;
         this.provider = provider;
         this.refreshTokenService = refreshTokenService;
@@ -64,5 +57,16 @@ public class AuthService {
                 .refreshToken(refreshToken.getToken())
                 .build();
 
+    }
+    public AuthResponse refreshAccessToken(RefreshRequest refreshRequest){
+        RefreshToken refreshToken = refreshTokenService.findByToken(refreshRequest.getRefreshToken());
+        if (refreshTokenService.isRefreshTokenExpired(refreshToken)){
+            refreshTokenService.deleteRefreshToken(refreshToken);
+            throw new AuthErrorException("RefreshToken is expired");
+        }
+        return AuthResponse.builder()
+                .refreshToken(refreshToken.getToken())
+                .accessToken(provider.generateToken(refreshToken.getClubMember().getEmail(), "ROLE_USER"))
+                .build();
     }
 }

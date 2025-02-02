@@ -1,15 +1,12 @@
 package ru.semavin.ClubCard.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AuthResponse {
-    private String accessToken;
+@AllArgsConstructor
+public class RefreshRequest {
     private String refreshToken;
 }
