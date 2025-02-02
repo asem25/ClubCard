@@ -1,13 +1,11 @@
 package ru.semavin.ClubCard.controllers;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.semavin.ClubCard.dto.AuthResponse;
-import ru.semavin.ClubCard.dto.ClubMemberLoginDTO;
-import ru.semavin.ClubCard.dto.ClubMemberRegisterDTO;
-import ru.semavin.ClubCard.dto.RefreshRequest;
+import ru.semavin.ClubCard.dto.*;
 import ru.semavin.ClubCard.service.AuthService;
 import ru.semavin.ClubCard.service.LogoutService;
 
@@ -53,5 +51,10 @@ public class AuthController{
                                          @RequestParam("refreshToken") String refreshToken) {
         logoutService.invalidateTokens(accessToken, refreshToken);
         return ResponseEntity.ok("Logout successful");
+    }
+    @GetMapping("/validate")
+    public ResponseEntity<String> validate(@RequestBody TokenResponse response){
+        return ResponseEntity.ok(logoutService.isTokenBlackListed(response.getJwtToken())
+                ? "VALID" : "NO VALID");
     }
 }
