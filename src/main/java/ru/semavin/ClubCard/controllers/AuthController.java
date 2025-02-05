@@ -48,8 +48,8 @@ public class AuthController{
     }
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken,
-                                         @RequestParam("refreshToken") String refreshToken) {
-        logoutService.invalidateTokens(accessToken, refreshToken);
+                                        @RequestBody RefreshRequest refreshRequest) {
+        logoutService.invalidateTokens(accessToken, refreshRequest.getRefreshToken());
         return ResponseEntity.ok("Logout successful");
     }
     @GetMapping("/validate")

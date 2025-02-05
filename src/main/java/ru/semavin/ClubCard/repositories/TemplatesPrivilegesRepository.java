@@ -7,5 +7,5 @@ import ru.semavin.ClubCard.models.TemplatesPrivilege;
 import java.util.Optional;
 
 public interface TemplatesPrivilegesRepository extends JpaRepository<TemplatesPrivilege, Long> {
-    Optional<TemplatesPrivilege> findByTemplate(String template);
+    Optional<TemplatesPrivilege> findByTemplateIgnoreCase(String template);
 }

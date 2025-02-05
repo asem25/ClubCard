@@ -1,10 +1,12 @@
 package ru.semavin.ClubCard.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.semavin.ClubCard.models.BlackListToken;
 
 @Service
+@Slf4j
 public class LogoutService {
     private final RefreshTokenService refreshTokenService;
     private final BlackListTokenService blackListTokenService;
@@ -26,7 +28,13 @@ public class LogoutService {
         refreshTokenService.deleteByToken(refreshToken);
     }
     public boolean isTokenBlackListed(String token){
-        return !blackListTokenService.tokenExists(token);
+        boolean inBlackList = blackListTokenService.tokenExists(token);
+        if (inBlackList){
+            log.info(String.format("Token {%s} in black list", token));
+        }else {
+            log.info(String.format("Token {%s} is free", token));
+        }
+        return inBlackList;
     }
 
 }
