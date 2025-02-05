@@ -34,9 +34,9 @@
 | `POST`   | `/api/auth/logout`             | Выход из системы                         | ✅ Сделано   |
 | `POST`   | `/api/auth/refresh`            | Получение нового JWT-токена              | ✅ Сделано   |
 | `GET`    | `/api/auth/validate`           | Проверка JWT токена                      | ✅ Сделано   |
-| `POST`   | `/api/user/role`               | Изменение роли пользователя              | IN PROGRESS |
-| `GET`    | `/api/user/profile`            | Просмотр профиля пользователя            | IN PROGRESS |
-| `PATCH`  | `/api/user/profile`            | Редактирование профиля                   | IN PROGRESS |
+| `POST`   | `/api/user/role`               | Изменение роли пользователя              | ✅ Сделано  |
+| `GET`    | `/api/user/profile`            | Просмотр профиля пользователя            | ✅ Сделано  |
+| `PATCH`  | `/api/user/profile`            | Редактирование профиля                   | ✅ Сделано  |
 | `POST`   | `/api/card`                    | Создание виртуальной карты               | IN PROGRESS |
 | `GET`    | `/api/card/{id}`               | Получение информации о карте             | IN PROGRESS |
 | `PATCH`  | `/api/card/{id}`               | Кастомизация виртуальной карты           | IN PROGRESS |
